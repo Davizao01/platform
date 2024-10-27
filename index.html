@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Plataforma</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #87CEEB; /* Céu */
+        }
+        #gameCanvas {
+            background-color: #654321; /* Cor da plataforma */
+            display: block;
+            margin: 0 auto;
+            position: relative;
+            border: 2px solid #000; /* Borda do jogo */
+        }
+        .player {
+            width: 40px;
+            height: 40px;
+            background-color: #ff0000; /* Cor do jogador */
+            position: absolute;
+            bottom: 50px; /* Altura da plataforma */
+            left: 50px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="gameCanvas" width="800" height="400"></canvas>
+<div class="player" id="player"></div>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const player = document.getElementById('player');
+    let playerX = 50;
+    let playerY = 310; // Altura da plataforma
+    let gravity = 1;
+    let velocityY = 0;
+    let isJumping = false;
+
+    function drawPlayer() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#654321'; // Cor da plataforma
+        ctx.fillRect(0, 350, canvas.width, 50); // Plataforma
+        ctx.fillStyle = '#ff0000'; // Cor do jogador
+        ctx.fillRect(playerX, playerY, 40, 40); // Jogador
+    }
+
+    function update() {
+        if (isJumping) {
+            velocityY += gravity; // Aumentar a velocidade pela gravidade
+            playerY += velocityY;
+
+            // Limitar a queda ao nível da plataforma
+            if (playerY >= 310) {
+                playerY = 310;
+                isJumping = false;
+                velocityY = 0;
+            }
+        }
+        drawPlayer();
+        requestAnimationFrame(update); // Atualiza a animação
+    }
+
+    document.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowRight') {
+            playerX += 5; // Move para a direita
+        } else if (event.key === 'ArrowLeft') {
+            playerX -= 5; // Move para a esquerda
+        } else if (event.key === ' ' && !isJumping) { // Tecla de espaço para pular
+            isJumping = true;
+            velocityY = -15; // Define a velocidade inicial do salto
+        }
+    });
+
+    update(); // Iniciar o jogo
+</script>
+
+</body>
+</html>
